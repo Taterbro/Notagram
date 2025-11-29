@@ -2,40 +2,71 @@ import { typography } from "@/constants/theme";
 import { SafeAreaWrapper } from "@/hoc/SafeAreaWrapper";
 import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from "react-native-reanimated";
 
 export default function LandingPage() {
   const router = useRouter();
   const { colors } = useTheme();
   const styles = createStyles(colors);
+  const titleOpacity = useSharedValue(0);
+  const subOpacity = useSharedValue(0);
+  const buttonOpacity = useSharedValue(0);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: titleOpacity.value,
+  }));
+  const subTitleStyle = useAnimatedStyle(() => ({
+    opacity: subOpacity.value,
+  }));
+  const buttonStyle = useAnimatedStyle(() => ({
+    opacity: buttonOpacity.value,
+  }));
+  useEffect(() => {
+    titleOpacity.value = withTiming(1, { duration: 1500 });
+    subOpacity.value = withDelay(1700, withTiming(1, { duration: 1500 }));
+    buttonOpacity.value = withDelay(4500, withTiming(1, { duration: 1500 }));
+  }, []);
   return (
     <SafeAreaWrapper>
       <View style={styles.main}>
         <View style={{ alignItems: "center" }}>
-          <Text style={styles.headerText}>NOTAGRAM</Text>
-          <Text style={styles.subText}>It's not instagram</Text>
-          <Text style={{ ...styles.subText, textAlign: "center" }}>
+          <Animated.Text style={[styles.headerText, animatedStyle]}>
+            NOTAGRAM
+          </Animated.Text>
+          <Animated.Text style={[styles.subText, subTitleStyle]}>
+            It's not instagram
+          </Animated.Text>
+          <Animated.Text
+            style={[styles.subText, buttonStyle, { textAlign: "center" }]}
+          >
             Also fuck instagram, they sell your data to advertisers
-          </Text>
+          </Animated.Text>
         </View>
         <View style={{ height: 100 }} />
 
-        <View style={styles.buttonWrapper}>
-          <Button
-            mode="contained"
-            onPress={() => router.navigate("/(auth)/signIn")}
-          >
-            <Text>Login</Text>
-          </Button>
-
+        <Animated.View style={[styles.buttonWrapper, buttonStyle]}>
           <Button
             mode="outlined"
             onPress={() => router.navigate("/(auth)/signUp")}
           >
             <Text>Signup</Text>
           </Button>
-        </View>
+
+          <Button
+            mode="contained"
+            onPress={() => router.navigate("/(auth)/signIn")}
+          >
+            <Text>Login</Text>
+          </Button>
+        </Animated.View>
       </View>
     </SafeAreaWrapper>
   );
