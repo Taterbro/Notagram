@@ -10,6 +10,8 @@ export default function Index() {
       <Stack.Screen name="signIn" />
       <Stack.Screen name="forgotPassword" />
       <Stack.Screen name="resetPassword" />
+      <Stack.Screen name="welcome" />
+      <Stack.Screen name="secretKey" />
     </Stack>
   );
 }

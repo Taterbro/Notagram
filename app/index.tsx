@@ -55,14 +55,14 @@ export default function LandingPage() {
         <Animated.View style={[styles.buttonWrapper, buttonStyle]}>
           <Button
             mode="outlined"
-            onPress={() => router.navigate("/(auth)/signUp")}
+            onPress={() => router.navigate("/(auth)/signUp/signUp")}
           >
             <Text>Signup</Text>
           </Button>
 
           <Button
             mode="contained"
-            onPress={() => router.navigate("/(auth)/signIn")}
+            onPress={() => router.navigate("/(auth)/signIn/signIn")}
           >
             <Text>Login</Text>
           </Button>

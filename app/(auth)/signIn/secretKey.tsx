@@ -5,62 +5,49 @@ import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Button, Dialog, Portal } from "react-native-paper";
 
-export default function SignIn() {
+export default function SecretKey() {
   const { colors } = useTheme();
+  const router = useRouter();
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      email: "",
-      password: "",
+      code: "",
     },
   });
   const [isDialogOpen, setDialogOpen] = useState(false);
   const styles = createStyles(colors);
-  const router = useRouter();
+  const message =
+    "Please make sure the secret key is correct. You won't be able to view your files if it's not";
 
-  const onSubmit = (data: any) => {
-    router.replace("/signIn/welcome");
+  const handleButtonPress = () => {
+    router.navigate("/main/home");
   };
-  const randomMessage = Math.floor(Math.random() * 2);
-  const welcomeMessages = ["Welcome Back", "Hi again", "Glad to have you back"];
-
   return (
     <SafeAreaWrapper style={{ justifyContent: "center" }}>
       <View style={{ flex: 1 }}>
-        <Text style={styles.title}>{welcomeMessages[randomMessage]}</Text>
+        <Text style={styles.title}>What's your secret key?</Text>
+        <Text style={styles.subText}>{message}</Text>
         <ScrollView style={{ gap: 8, height: "50%" }}>
           <CustomInput
             required={true}
-            name="email"
+            name="code"
             control={control}
-            label="Email"
-            isEmail={true}
+            label="Secret Key"
+            rules={{
+              minLength: {
+                value: 8,
+                message: "Your secret key is definitely more than 7 characters",
+              },
+            }}
           />
-          <CustomInput
-            required={true}
-            name="password"
-            control={control}
-            label="Password"
-            isPassword={true}
-          />
-          <TouchableOpacity
-            style={styles.linkButton}
-            onPress={() => router.navigate("/(auth)/signIn/forgotPassword")}
-          >
-            <Text style={styles.forgotText}>Forgot Password?</Text>
-          </TouchableOpacity>
         </ScrollView>
-        <Button mode="contained" onPress={handleSubmit(onSubmit)}>
-          <Text>Login</Text>
-        </Button>
+        <View>
+          <Button mode="contained" onPress={handleSubmit(handleButtonPress)}>
+            <Text>Submit</Text>
+          </Button>
+        </View>
       </View>
 
       <Portal>
@@ -68,15 +55,16 @@ export default function SignIn() {
           style={{ backgroundColor: colors.background }}
           visible={isDialogOpen}
           onDismiss={() => setDialogOpen(false)}
+          dismissable={false}
         >
-          <Dialog.Title>Alert</Dialog.Title>
+          <Dialog.Title>Success :D</Dialog.Title>
           <Dialog.Content>
             <Text style={{ color: colors.text }}>
-              Successfully submitted, bro
+              Your Email has been verified
             </Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setDialogOpen(false)}>Ok, big bro</Button>
+            <Button onPress={() => setDialogOpen(false)}>cool</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
@@ -91,14 +79,21 @@ const createStyles = (colors: any) =>
       color: colors.text,
       marginBottom: 64,
     },
-    forgotText: {
-      fontSize: typography.sm,
-      color: colors.textSecondary,
-
-      textDecorationLine: "underline",
-    },
-    linkButton: {
+    resendButton: {
       width: "100%",
       textAlign: "right",
+    },
+
+    subText: {
+      fontSize: typography.md,
+      color: colors.text,
+      marginBottom: 8,
+    },
+
+    warning: {
+      justifyContent: "center",
+      alignItems: "center",
+      gap: "10px",
+      width: "100%",
     },
   });

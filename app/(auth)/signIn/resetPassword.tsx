@@ -73,7 +73,7 @@ export default function ForgotPassword() {
             <Button
               onPress={() => {
                 setDialogOpen(false);
-                router.replace("/(auth)/signIn");
+                router.replace("/(auth)/signIn/signIn");
               }}
             >
               Log in

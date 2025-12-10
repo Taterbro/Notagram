@@ -45,7 +45,7 @@ export default function CustomInput({
   style,
   required,
 }: inputProps) {
-  const { colors } = useTheme();
+  const { colors } = useTheme() as any;
   const styles = returnStyles(colors);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -87,6 +87,7 @@ export default function CustomInput({
                 onChangeText={onChange}
                 onBlur={onBlur}
                 value={value}
+                placeholderTextColor={colors.textMuted}
                 keyboardType={isEmail ? "email-address" : "default"}
                 secureTextEntry={isPassword && !isPasswordVisible}
               />

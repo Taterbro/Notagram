@@ -7,10 +7,9 @@ export default function Index() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="signUp" />
-      <Stack.Screen name="verifyAccount" />
-      <Stack.Screen name="secretKey" />
-      <Stack.Screen name="avatar" />
+      <Stack.Screen name="home" />
+      <Stack.Screen name="addPost" />
+      <Stack.Screen name="profile" />
     </Stack>
   );
 }
