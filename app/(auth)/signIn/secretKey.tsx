@@ -22,7 +22,7 @@ export default function SecretKey() {
     "Please make sure the secret key is correct. You won't be able to view your files if it's not";
 
   const handleButtonPress = () => {
-    router.navigate("/main/home");
+    router.replace("/main/home");
   };
   return (
     <SafeAreaWrapper style={{ justifyContent: "center" }}>
