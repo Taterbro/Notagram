@@ -1,3 +1,4 @@
+import ViewPhotoModal from "@/components/viewPhotoModal";
 import { typography } from "@/constants/theme";
 import { MAX_PHOTOS_UPLOAD } from "@/constants/variables";
 import { SafeAreaWrapper } from "@/hoc/SafeAreaWrapper";
@@ -7,6 +8,7 @@ import { useEffect, useState } from "react";
 import {
   Alert,
   Image,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,6 +18,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   PhotoIcon,
+  XCircleIcon,
 } from "react-native-heroicons/solid";
 import { Button, TextInput } from "react-native-paper";
 
@@ -27,6 +30,7 @@ export default function AddPost() {
   const [description, setDescription] = useState("");
   const [activeImage, setActiveImage] = useState(0);
   const [hasPhotos, setHasPhotos] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
   const styles = createStyles(colors);
 
   const uploadButtonClicked = () => {
@@ -87,6 +91,25 @@ export default function AddPost() {
     }
   };
 
+  const removePhoto = () => {
+    if (!photos) return;
+
+    setPhotos((prev) => {
+      if (!prev) return null;
+      const newPhotos = prev.filter((_, index) => index !== activeImage);
+
+      // If we removed all photos, return null
+      if (newPhotos.length === 0) return null;
+
+      // If active image is now out of bounds, adjust it
+      if (activeImage >= newPhotos.length) {
+        setActiveImage(newPhotos.length - 1);
+      }
+
+      return newPhotos;
+    });
+  };
+
   useEffect(() => {
     photos && photos.length > 0 ? setHasPhotos(true) : setHasPhotos(false);
   }, [photos]);
@@ -106,12 +129,23 @@ export default function AddPost() {
           <Text>Upload</Text>
         </Button>
       </View>
+
       <View style={styles.box}>
         {hasPhotos ? (
-          <Image
-            style={styles.photo}
-            source={{ uri: photos?.[activeImage].uri }}
-          />
+          <>
+            <TouchableOpacity onPress={removePhoto} style={styles.deleteButton}>
+              <XCircleIcon fill={colors.primaryLight} size={"100%"} />
+            </TouchableOpacity>
+            <Pressable
+              style={{ width: "100%", height: "100%" }}
+              onPress={() => setModalOpen(true)}
+            >
+              <Image
+                style={styles.photo}
+                source={{ uri: photos?.[activeImage].uri }}
+              />
+            </Pressable>
+          </>
         ) : (
           <TouchableOpacity style={styles.box_touch} onPress={pickFile}>
             <PhotoIcon fill={colors.primaryLight} opacity={0.7} size={"70%"} />
@@ -161,6 +195,14 @@ export default function AddPost() {
         scrollEnabled
         numberOfLines={20}
       ></TextInput>
+
+      {photos && (
+        <ViewPhotoModal
+          isModalOpen={isModalOpen}
+          onRequestClose={() => setModalOpen(false)}
+          activePhoto={photos[activeImage]}
+        />
+      )}
     </SafeAreaWrapper>
   );
 }
@@ -187,13 +229,16 @@ const createStyles = (colors: any) =>
       alignItems: "center",
       justifyContent: "center",
       marginBottom: 8,
+      position: "relative",
     },
+
     box_touch: {
       width: "100%",
       height: "100%",
       alignItems: "center",
       justifyContent: "center",
     },
+
     headerTitle: {
       fontSize: typography.md,
       color: colors.textSecondary,
@@ -233,5 +278,16 @@ const createStyles = (colors: any) =>
       objectFit: "cover",
       width: "100%",
       height: "100%",
+    },
+    deleteButton: {
+      position: "absolute",
+      top: 4,
+      right: 8,
+      borderRadius: "100%",
+      borderWidth: 1,
+      borderColor: "black",
+      height: 35,
+      width: 35,
+      zIndex: 5,
     },
   });
