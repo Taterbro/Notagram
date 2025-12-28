@@ -8,7 +8,10 @@ import { useEffect, useState } from "react";
 import {
   Alert,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -130,71 +133,85 @@ export default function AddPost() {
         </Button>
       </View>
 
-      <View style={styles.box}>
-        {hasPhotos ? (
-          <>
-            <TouchableOpacity onPress={removePhoto} style={styles.deleteButton}>
-              <XCircleIcon fill={colors.primaryLight} size={"100%"} />
-            </TouchableOpacity>
-            <Pressable
-              style={{ width: "100%", height: "100%" }}
-              onPress={() => setModalOpen(true)}
-            >
-              <Image
-                style={styles.photo}
-                source={{ uri: photos?.[activeImage].uri }}
-              />
-            </Pressable>
-          </>
-        ) : (
-          <TouchableOpacity style={styles.box_touch} onPress={pickFile}>
-            <PhotoIcon fill={colors.primaryLight} opacity={0.7} size={"70%"} />
-          </TouchableOpacity>
-        )}
-      </View>
-
-      {hasPhotos && (
-        <>
-          <View style={styles.photoNav}>
-            <TouchableOpacity
-              onPress={() => onPhotoButtonClick(0)}
-              style={styles.photoNav_buttons}
-            >
-              <ChevronLeftIcon fill={colors.textSecondary} size={20} />
-            </TouchableOpacity>
-            <Text style={styles.photoNav_text}>{`${activeImage + 1}/${
-              photos?.length || "1"
-            }`}</Text>
-            <TouchableOpacity
-              onPress={() => onPhotoButtonClick(1)}
-              style={styles.photoNav_buttons}
-            >
-              <ChevronRightIcon fill={colors.textSecondary} size={20} />
-            </TouchableOpacity>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView>
+          <View style={styles.box}>
+            {hasPhotos ? (
+              <>
+                <TouchableOpacity
+                  onPress={removePhoto}
+                  style={styles.deleteButton}
+                >
+                  <XCircleIcon fill={colors.primaryLight} size={"100%"} />
+                </TouchableOpacity>
+                <Pressable
+                  style={{ width: "100%", height: "100%" }}
+                  onPress={() => setModalOpen(true)}
+                >
+                  <Image
+                    style={styles.photo}
+                    source={{ uri: photos?.[activeImage].uri }}
+                  />
+                </Pressable>
+              </>
+            ) : (
+              <TouchableOpacity style={styles.box_touch} onPress={pickFile}>
+                <PhotoIcon
+                  fill={colors.primaryLight}
+                  opacity={0.7}
+                  size={"70%"}
+                />
+              </TouchableOpacity>
+            )}
           </View>
 
-          <View style={styles.buttonsContainer}>
-            <Button mode="outlined">
-              <Text>Add music</Text>
-            </Button>
+          {hasPhotos && (
+            <>
+              <View style={styles.photoNav}>
+                <TouchableOpacity
+                  onPress={() => onPhotoButtonClick(0)}
+                  style={styles.photoNav_buttons}
+                >
+                  <ChevronLeftIcon fill={colors.textSecondary} size={20} />
+                </TouchableOpacity>
+                <Text style={styles.photoNav_text}>{`${activeImage + 1}/${
+                  photos?.length || "1"
+                }`}</Text>
+                <TouchableOpacity
+                  onPress={() => onPhotoButtonClick(1)}
+                  style={styles.photoNav_buttons}
+                >
+                  <ChevronRightIcon fill={colors.textSecondary} size={20} />
+                </TouchableOpacity>
+              </View>
 
-            <TouchableOpacity onPress={pickFile}>
-              <Text style={styles.addPhotosText}>Add more files</Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
+              <View style={styles.buttonsContainer}>
+                <Button mode="outlined">
+                  <Text>Add music</Text>
+                </Button>
 
-      <View style={{ height: 32 }} />
+                <TouchableOpacity onPress={pickFile}>
+                  <Text style={styles.addPhotosText}>Add more files</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
 
-      <TextInput
-        placeholder="Type something..."
-        multiline
-        value={description}
-        onChangeText={setDescription}
-        scrollEnabled
-        numberOfLines={20}
-      ></TextInput>
+          <View style={{ height: 32 }} />
+
+          <TextInput
+            placeholder="Type something..."
+            multiline
+            value={description}
+            onChangeText={setDescription}
+            scrollEnabled
+            numberOfLines={20}
+          ></TextInput>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       {photos && (
         <ViewPhotoModal
