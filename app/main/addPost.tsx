@@ -103,8 +103,9 @@ export default function AddPost() {
       if (doc.canceled || doc.assets === null) return;
       const audioFile = doc.assets[0];
       if (audioPlayer.playing) {
-        audioPlayer.pause();
         setAudioPlaying(false);
+        audioPlayer.pause();
+        setAudio(audioFile);
       }
       setAudio(audioFile);
     } catch (err) {
