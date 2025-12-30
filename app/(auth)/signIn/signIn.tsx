@@ -52,7 +52,6 @@ export default function SignIn() {
             isPassword={true}
           />
           <TouchableOpacity
-            style={styles.linkButton}
             onPress={() => router.navigate("/(auth)/signIn/forgotPassword")}
           >
             <Text style={styles.forgotText}>Forgot Password?</Text>
@@ -94,11 +93,9 @@ const createStyles = (colors: any) =>
     forgotText: {
       fontSize: typography.sm,
       color: colors.textSecondary,
-
       textDecorationLine: "underline",
     },
     linkButton: {
-      width: "100%",
       textAlign: "right",
     },
   });
