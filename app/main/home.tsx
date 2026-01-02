@@ -1,23 +1,26 @@
+import { testPosts } from "@/constants/postsTest";
 import { typography } from "@/constants/theme";
 import { Main } from "@/features/editProfile";
+import { PostItem } from "@/features/viewPosts";
 import { SafeAreaWrapper } from "@/hoc/SafeAreaWrapper";
 import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
 import {
-  ScrollView,
+  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { Squares2X2Icon } from "react-native-heroicons/solid";
-import { Avatar, IconButton } from "react-native-paper";
+import { Avatar } from "react-native-paper";
 
 export default function HomePage() {
   const { colors } = useTheme();
   const styles = createStyles(colors);
-  const [viewMode, setViewMode] = useState<"grid" | "single">("grid");
+  // const [viewMode, setViewMode] = useState<"grid" | "single">("grid");
   const [editProfileVisible, setEditProfileVisible] = useState(false);
+  const [columnNumbers, setColumnNumbers] = useState(3);
+  const [activeImage, setActiveImage] = useState<number | null>(null);
 
   return (
     <SafeAreaWrapper>
@@ -34,13 +37,24 @@ export default function HomePage() {
               <Text style={styles.userName}>Vi's uploads</Text>
             </View>
           </TouchableOpacity>
-
-          {viewMode === "single" && (
-            <IconButton size={24} icon={Squares2X2Icon} />
-          )}
         </View>
-
-        <ScrollView></ScrollView>
+        <FlatList
+          data={testPosts}
+          key={columnNumbers}
+          numColumns={columnNumbers}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({ item }) =>
+            item.images ? (
+              <PostItem
+                setActiveImage={setActiveImage}
+                id={item.id}
+                url={item.images[0]}
+              />
+            ) : (
+              <></>
+            )
+          }
+        />
       </View>
       <Main
         setVisible={setEditProfileVisible}

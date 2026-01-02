@@ -95,6 +95,8 @@ export default function AddPost() {
     }
   };
   const pickAudio = async () => {
+    setAudioPlaying(false);
+    audioPlayer.pause();
     try {
       const doc = await DocumentPicker.getDocumentAsync({
         type: ["audio/*"],
@@ -102,11 +104,7 @@ export default function AddPost() {
       });
       if (doc.canceled || doc.assets === null) return;
       const audioFile = doc.assets[0];
-      if (audioPlayer.playing) {
-        setAudioPlaying(false);
-        audioPlayer.pause();
-        setAudio(audioFile);
-      }
+
       setAudio(audioFile);
     } catch (err) {
       console.log("error while loading file", err);
@@ -301,13 +299,14 @@ export default function AddPost() {
           <View style={{ height: 32 }} />
 
           <TextInput
+            style={styles.description}
             placeholder="Type something..."
             multiline
             value={description}
             onChangeText={setDescription}
             scrollEnabled
             numberOfLines={20}
-          ></TextInput>
+          />
         </ScrollView>
       </KeyboardAvoidingView>
 
@@ -340,6 +339,11 @@ const createStyles = (colors: any) =>
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
+    },
+    description: {
+      backgroundColor: "transparent",
+      borderWidth: 1,
+      borderColor: colors.primaryDark,
     },
     box: {
       borderWidth: 1,
