@@ -13,13 +13,15 @@ import { XCircleIcon } from "react-native-heroicons/solid";
 interface props {
   isModalOpen: boolean;
   onRequestClose: ((event: NativeSyntheticEvent<any>) => void) | undefined;
-  activePhoto: DocumentPicker.DocumentPickerAsset;
+  activePhoto?: DocumentPicker.DocumentPickerAsset;
+  activePhotoUrl?: string;
 }
 
 export default function ViewPhotoModal({
   isModalOpen,
   onRequestClose,
   activePhoto,
+  activePhotoUrl,
 }: props) {
   const { colors } = useTheme() as any;
   const styles = createStyles(colors);
@@ -27,7 +29,7 @@ export default function ViewPhotoModal({
     <Modal visible={isModalOpen} onRequestClose={onRequestClose}>
       <View style={styles.modalContent}>
         <Image
-          source={{ uri: activePhoto.uri }}
+          source={{ uri: activePhoto?.uri || activePhotoUrl || "" }}
           style={styles.fullImage}
           resizeMode="contain"
         />

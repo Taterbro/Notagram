@@ -27,7 +27,7 @@ export default function SignIn() {
   const router = useRouter();
 
   const onSubmit = (data: any) => {
-    router.replace("/signIn/welcome");
+    router.dismissTo("/signIn/welcome");
   };
   const randomMessage = Math.floor(Math.random() * 2);
   const welcomeMessages = ["Welcome Back", "Hi again", "Glad to have you back"];
@@ -51,7 +51,9 @@ export default function SignIn() {
             label="Password"
             isPassword={true}
           />
+          <View style={{ height: 8 }} />
           <TouchableOpacity
+            style={{ alignSelf: "flex-start", paddingVertical: 8 }}
             onPress={() => router.navigate("/(auth)/signIn/forgotPassword")}
           >
             <Text style={styles.forgotText}>Forgot Password?</Text>

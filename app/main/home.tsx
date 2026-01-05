@@ -1,7 +1,8 @@
-import { testPosts } from "@/constants/postsTest";
+import ViewPhotoModal from "@/components/viewPhotoModal";
+import { posts, testPosts } from "@/constants/postsTest";
 import { typography } from "@/constants/theme";
 import { Main } from "@/features/editProfile";
-import { PostItem } from "@/features/viewPosts";
+import { PostItem, SinglePostModal } from "@/features/viewPosts";
 import { SafeAreaWrapper } from "@/hoc/SafeAreaWrapper";
 import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
@@ -20,7 +21,9 @@ export default function HomePage() {
   // const [viewMode, setViewMode] = useState<"grid" | "single">("grid");
   const [editProfileVisible, setEditProfileVisible] = useState(false);
   const [columnNumbers, setColumnNumbers] = useState(3);
-  const [activeImage, setActiveImage] = useState<number | null>(null);
+  const [activePost, setActivePost] = useState<posts | null>(null);
+  const [activePhoto, setActivePhoto] = useState<string | undefined>(undefined);
+  const [isAudioMuted, setAudioMuted] = useState(false);
 
   return (
     <SafeAreaWrapper>
@@ -43,23 +46,35 @@ export default function HomePage() {
           key={columnNumbers}
           numColumns={columnNumbers}
           keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) =>
-            item.images ? (
-              <PostItem
-                setActiveImage={setActiveImage}
-                id={item.id}
-                url={item.images[0]}
-              />
-            ) : (
-              <></>
-            )
-          }
+          renderItem={({ item }) => (
+            <PostItem
+              setActivePost={setActivePost}
+              post={item}
+              url={item.images[0]}
+            />
+          )}
         />
       </View>
       <Main
         setVisible={setEditProfileVisible}
         visible={editProfileVisible}
       ></Main>
+
+      {activePost && (
+        <SinglePostModal
+          visible={activePost ? true : false}
+          setActivePost={setActivePost}
+          activePost={activePost}
+          isAudioMuted={isAudioMuted}
+          setAudioMuted={setAudioMuted}
+          setActivePhoto={setActivePhoto}
+        />
+      )}
+      <ViewPhotoModal
+        isModalOpen={activePhoto ? true : false}
+        onRequestClose={() => setActivePhoto(undefined)}
+        activePhotoUrl={activePhoto}
+      />
     </SafeAreaWrapper>
   );
 }

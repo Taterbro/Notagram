@@ -1,14 +1,15 @@
+import { posts } from "@/constants/postsTest";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
 
 interface props {
-  id: number;
+  post: posts;
   url: string;
-  setActiveImage: React.Dispatch<React.SetStateAction<number | null>>;
+  setActivePost: React.Dispatch<React.SetStateAction<posts | null>>;
 }
 
-export default function PostItem({ url, id, setActiveImage }: props) {
+export default function PostItem({ url, post, setActivePost }: props) {
   return (
-    <TouchableOpacity style={styles.main} onPress={() => setActiveImage(id)}>
+    <TouchableOpacity style={styles.main} onPress={() => setActivePost(post)}>
       <Image style={styles.main_img} source={{ uri: url }} />
     </TouchableOpacity>
   );
