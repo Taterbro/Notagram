@@ -50,6 +50,10 @@ export const AuthProvider = ({ children }: props) => {
   useEffect(() => {
     getUserDataFromLocalStorage();
   }, []);
+  useEffect(
+    () => console.log("user data state got updated to: ", userData),
+    [userData]
+  );
   return (
     <authContext.Provider
       value={{ userData: userData, setter: userDataSetter }}

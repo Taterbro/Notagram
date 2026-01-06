@@ -2,6 +2,7 @@ import { typography } from "@/constants/theme";
 import { SafeAreaWrapper } from "@/hoc/SafeAreaWrapper";
 import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
@@ -33,6 +34,10 @@ export default function LandingPage() {
     titleOpacity.value = withTiming(1, { duration: 1500 });
     subOpacity.value = withDelay(1700, withTiming(1, { duration: 1500 }));
     buttonOpacity.value = withDelay(4500, withTiming(1, { duration: 1500 }));
+  }, []);
+
+  useEffect(() => {
+    SecureStore.setItem("isFirstTime", "1");
   }, []);
   return (
     <SafeAreaWrapper>

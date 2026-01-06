@@ -4,15 +4,46 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { ThemeProvider } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
 import { Stack } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 
+// Inner component that uses the auth context
+function RootLayoutNav() {
+  const { userData } = useAuth();
+  const isFirstTime = SecureStore.getItem("isFirstTime");
+
+  useEffect(() => {
+    console.log("first time is: ", isFirstTime);
+  }, []);
+
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Protected guard={isFirstTime === null}>
+        <Stack.Screen name="index" />
+      </Stack.Protected>
+
+      <Stack.Protected guard={userData !== null}>
+        <Stack.Screen name="main" />
+      </Stack.Protected>
+
+      <Stack.Protected guard={userData === null}>
+        <Stack.Screen name="(auth)" />
+      </Stack.Protected>
+    </Stack>
+  );
+}
+
+// Outer component that provides the context
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
-  const { userData } = useAuth();
 
   useEffect(() => {
     NavigationBar.setBackgroundColorAsync("#000");
@@ -23,23 +54,9 @@ export default function RootLayout() {
     <ThemeProvider value={theme}>
       <AuthProvider>
         <PaperProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen name="index" />
-            <Stack.Protected guard={userData !== null}>
-              <Stack.Screen name="main" />
-            </Stack.Protected>
-
-            <Stack.Protected guard={userData === null}>
-              <Stack.Screen name="(auth)" />
-            </Stack.Protected>
-          </Stack>
+          <RootLayoutNav />
         </PaperProvider>
       </AuthProvider>
-
       <StatusBar style="auto" />
     </ThemeProvider>
   );
