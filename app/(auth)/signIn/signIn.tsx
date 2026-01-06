@@ -1,8 +1,10 @@
 import CustomInput from "@/components/RHF/customInput";
 import { typography } from "@/constants/theme";
+import { useAuth } from "@/contexts/authContext";
 import { SafeAreaWrapper } from "@/hoc/SafeAreaWrapper";
 import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -16,6 +18,7 @@ import { Button, Dialog, Portal } from "react-native-paper";
 
 export default function SignIn() {
   const { colors } = useTheme();
+  const { setter } = useAuth();
   const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
@@ -26,8 +29,14 @@ export default function SignIn() {
   const styles = createStyles(colors);
   const router = useRouter();
 
-  const onSubmit = (data: any) => {
-    router.dismissTo("/signIn/welcome");
+  const onSubmit = async (data: any) => {
+    try {
+      SecureStore.setItemAsync("userData", JSON.stringify(data));
+      setter({ name: "Guy", pfp: "something" });
+      router.dismissTo("/signIn/welcome");
+    } catch {
+      console.log("something happened idk");
+    }
   };
   const randomMessage = Math.floor(Math.random() * 2);
   const welcomeMessages = ["Welcome Back", "Hi again", "Glad to have you back"];
@@ -52,12 +61,22 @@ export default function SignIn() {
             isPassword={true}
           />
           <View style={{ height: 8 }} />
-          <TouchableOpacity
-            style={{ alignSelf: "flex-start", paddingVertical: 8 }}
-            onPress={() => router.navigate("/(auth)/signIn/forgotPassword")}
-          >
-            <Text style={styles.forgotText}>Forgot Password?</Text>
-          </TouchableOpacity>
+
+          <View style={styles.linkContainer}>
+            <TouchableOpacity
+              style={{ alignSelf: "flex-start", paddingVertical: 8 }}
+              onPress={() => router.navigate("/(auth)/signIn/forgotPassword")}
+            >
+              <Text style={styles.forgotText}>Forgot Password?</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{ alignSelf: "flex-start", paddingVertical: 8 }}
+              onPress={() => router.replace("/(auth)/signUp/signUp")}
+            >
+              <Text style={styles.forgotText}>Signup instead?</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
         <Button mode="contained" onPress={handleSubmit(onSubmit)}>
           <Text>Login</Text>
@@ -99,5 +118,11 @@ const createStyles = (colors: any) =>
     },
     linkButton: {
       textAlign: "right",
+    },
+    linkContainer: {
+      flexDirection: "row",
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "space-between",
     },
   });

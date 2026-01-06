@@ -1,4 +1,5 @@
 import { darkTheme, lightTheme } from "@/constants/theme";
+import { AuthProvider, useAuth } from "@/contexts/authContext";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { ThemeProvider } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
@@ -8,13 +9,10 @@ import { useEffect } from "react";
 import { PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 
-export const unstable_settings = {
-  anchor: "(tabs)",
-};
-
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
+  const { userData } = useAuth();
 
   useEffect(() => {
     NavigationBar.setBackgroundColorAsync("#000");
@@ -23,16 +21,24 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={theme}>
-      <PaperProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="index" />
-          <Stack.Screen name="main" />
-        </Stack>
-      </PaperProvider>
+      <AuthProvider>
+        <PaperProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="index" />
+            <Stack.Protected guard={userData !== null}>
+              <Stack.Screen name="main" />
+            </Stack.Protected>
+
+            <Stack.Protected guard={userData === null}>
+              <Stack.Screen name="(auth)" />
+            </Stack.Protected>
+          </Stack>
+        </PaperProvider>
+      </AuthProvider>
 
       <StatusBar style="auto" />
     </ThemeProvider>
