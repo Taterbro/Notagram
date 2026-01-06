@@ -52,12 +52,22 @@ export default function SignIn() {
             isPassword={true}
           />
           <View style={{ height: 8 }} />
-          <TouchableOpacity
-            style={{ alignSelf: "flex-start", paddingVertical: 8 }}
-            onPress={() => router.navigate("/(auth)/signIn/forgotPassword")}
-          >
-            <Text style={styles.forgotText}>Forgot Password?</Text>
-          </TouchableOpacity>
+
+          <View style={styles.linkContainer}>
+            <TouchableOpacity
+              style={{ alignSelf: "flex-start", paddingVertical: 8 }}
+              onPress={() => router.navigate("/(auth)/signIn/forgotPassword")}
+            >
+              <Text style={styles.forgotText}>Forgot Password?</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{ alignSelf: "flex-start", paddingVertical: 8 }}
+              onPress={() => router.replace("/(auth)/signUp/signUp")}
+            >
+              <Text style={styles.forgotText}>Signup instead?</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
         <Button mode="contained" onPress={handleSubmit(onSubmit)}>
           <Text>Login</Text>
@@ -99,5 +109,11 @@ const createStyles = (colors: any) =>
     },
     linkButton: {
       textAlign: "right",
+    },
+    linkContainer: {
+      flexDirection: "row",
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "space-between",
     },
   });
