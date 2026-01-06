@@ -5,13 +5,7 @@ import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Button, Dialog, Portal } from "react-native-paper";
 
 export default function Signup() {
@@ -61,13 +55,6 @@ export default function Signup() {
                 value != initialPassword ? "Passwords do not match" : undefined,
             }}
           />
-
-          <TouchableOpacity
-            style={{ alignSelf: "flex-start", paddingVertical: 8 }}
-            onPress={() => router.replace("/(auth)/signIn/signIn")}
-          >
-            <Text style={styles.loginText}>Login instead?</Text>
-          </TouchableOpacity>
         </ScrollView>
         <Button mode="contained" onPress={handleSubmit(onSubmit)}>
           <Text>Submit</Text>
@@ -109,10 +96,5 @@ const createStyles = (colors: any) =>
       fontSize: typography.xl,
       color: colors.text,
       marginBottom: 64,
-    },
-    loginText: {
-      fontSize: typography.sm,
-      color: colors.textSecondary,
-      textDecorationLine: "underline",
     },
   });
