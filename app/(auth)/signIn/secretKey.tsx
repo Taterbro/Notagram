@@ -1,8 +1,10 @@
 import CustomInput from "@/components/RHF/customInput";
 import { typography } from "@/constants/theme";
+import { useAuth } from "@/contexts/authContext";
 import { SafeAreaWrapper } from "@/hoc/SafeAreaWrapper";
 import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
@@ -11,6 +13,8 @@ import { Button, Dialog, Portal } from "react-native-paper";
 export default function SecretKey() {
   const { colors } = useTheme();
   const router = useRouter();
+  const { setter } = useAuth();
+
   const { control, handleSubmit } = useForm({
     defaultValues: {
       code: "",
@@ -22,8 +26,22 @@ export default function SecretKey() {
     "Please make sure the secret key is correct. You won't be able to view your files if it's not";
 
   const handleButtonPress = () => {
-    router.replace("/main/home");
+    try {
+      SecureStore.setItemAsync(
+        "userData",
+        JSON.stringify({
+          name: "Guy",
+          pfp: "something",
+          email: "pee@peepee.com",
+        })
+      );
+      setter({ name: "Guy", pfp: "something", email: "pee@peepee.com" });
+      router.replace("/main/home");
+    } catch {
+      console.log("something happened idk");
+    }
   };
+
   return (
     <SafeAreaWrapper style={{ justifyContent: "center" }}>
       <View style={{ flex: 1 }}>

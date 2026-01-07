@@ -21,6 +21,7 @@ import {
   SpeakerXMarkIcon,
 } from "react-native-heroicons/solid";
 import Markdown from "react-native-markdown-display";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface props {
   visible: boolean;
@@ -68,71 +69,79 @@ export default function SinglePostModal({
       visible={visible}
       onRequestClose={() => setActivePost(null)}
     >
-      <View style={styles.main}>
-        <View style={[styles.top, styles.flexRow]}>
-          <TouchableOpacity onPress={() => setActivePost(null)}>
-            <View style={[styles.flexRow, styles.top_back]}>
-              <ChevronLeftIcon
-                fill={colors.textSecondary}
-                size={typography.md}
-              />
-              <Text style={styles.backText}>back</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.postTitle}>{activePost.title}</Text>
-
-        <ScrollView>
-          <View style={styles.box}>
-            <>
-              {activePost.audio && (
-                <Pressable onPress={pressPlay} style={styles.playerButton}>
-                  {isAudioMuted ? (
-                    <SpeakerXMarkIcon
-                      fill={colors.primaryLight}
-                      size={"100%"}
-                    />
-                  ) : (
-                    <SpeakerWaveIcon fill={colors.primaryLight} size={"100%"} />
-                  )}
-                </Pressable>
-              )}
-              <Pressable
-                style={{ width: "100%", height: "100%" }}
-                onPress={() => setActivePhoto(activePost.images[activeImage])}
-              >
-                <Image
-                  style={styles.photo}
-                  source={{ uri: activePost.images[activeImage] }}
+      <SafeAreaView>
+        <View style={styles.main}>
+          <View style={[styles.top, styles.flexRow]}>
+            <TouchableOpacity
+              style={{ paddingVertical: 8 }}
+              onPress={() => setActivePost(null)}
+            >
+              <View style={[styles.flexRow, styles.top_back]}>
+                <ChevronLeftIcon
+                  fill={colors.textSecondary}
+                  size={typography.md}
                 />
-              </Pressable>
-            </>
-          </View>
-
-          <View style={styles.photoNav}>
-            <TouchableOpacity
-              onPress={() => onPhotoButtonClick(0)}
-              style={styles.photoNav_buttons}
-            >
-              <ChevronLeftIcon fill={colors.textSecondary} size={20} />
-            </TouchableOpacity>
-            <Text style={styles.photoNav_text}>{`${activeImage + 1}/${
-              activePost.images.length || "1"
-            }`}</Text>
-            <TouchableOpacity
-              onPress={() => onPhotoButtonClick(1)}
-              style={styles.photoNav_buttons}
-            >
-              <ChevronRightIcon fill={colors.textSecondary} size={20} />
+                <Text style={styles.backText}>back</Text>
+              </View>
             </TouchableOpacity>
           </View>
 
-          <Markdown style={markdownStyles(colors)}>
-            {activePost.description}
-          </Markdown>
-        </ScrollView>
-      </View>
+          <Text style={styles.postTitle}>{activePost.title}</Text>
+
+          <ScrollView>
+            <View style={styles.box}>
+              <>
+                {activePost.audio && (
+                  <Pressable onPress={pressPlay} style={styles.playerButton}>
+                    {isAudioMuted ? (
+                      <SpeakerXMarkIcon
+                        fill={colors.primaryLight}
+                        size={"100%"}
+                      />
+                    ) : (
+                      <SpeakerWaveIcon
+                        fill={colors.primaryLight}
+                        size={"100%"}
+                      />
+                    )}
+                  </Pressable>
+                )}
+                <Pressable
+                  style={{ width: "100%", height: "100%" }}
+                  onPress={() => setActivePhoto(activePost.images[activeImage])}
+                >
+                  <Image
+                    style={styles.photo}
+                    source={{ uri: activePost.images[activeImage] }}
+                  />
+                </Pressable>
+              </>
+            </View>
+
+            <View style={styles.photoNav}>
+              <TouchableOpacity
+                onPress={() => onPhotoButtonClick(0)}
+                style={styles.photoNav_buttons}
+              >
+                <ChevronLeftIcon fill={colors.textSecondary} size={20} />
+              </TouchableOpacity>
+              <Text style={styles.photoNav_text}>{`${activeImage + 1}/${
+                activePost.images.length || "1"
+              }`}</Text>
+              <TouchableOpacity
+                onPress={() => onPhotoButtonClick(1)}
+                style={styles.photoNav_buttons}
+              >
+                <ChevronRightIcon fill={colors.textSecondary} size={20} />
+              </TouchableOpacity>
+            </View>
+
+            <Markdown style={markdownStyles(colors)}>
+              {activePost.description}
+            </Markdown>
+          </ScrollView>
+        </View>
+      </SafeAreaView>
     </Modal>
   );
 }

@@ -2,10 +2,11 @@ import ViewPhotoModal from "@/components/viewPhotoModal";
 import { posts, testPosts } from "@/constants/postsTest";
 import { typography } from "@/constants/theme";
 import { Main } from "@/features/editProfile";
+import LogoutModal from "@/features/editProfile/logoutModal";
 import { PostItem, SinglePostModal } from "@/features/viewPosts";
 import { SafeAreaWrapper } from "@/hoc/SafeAreaWrapper";
 import { useTheme } from "@react-navigation/native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -24,6 +25,13 @@ export default function HomePage() {
   const [activePost, setActivePost] = useState<posts | null>(null);
   const [activePhoto, setActivePhoto] = useState<string | undefined>(undefined);
   const [isAudioMuted, setAudioMuted] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
+
+  useEffect(() => {
+    if (confirmLogout) {
+      setEditProfileVisible(false);
+    }
+  }, [confirmLogout]);
 
   return (
     <SafeAreaWrapper>
@@ -58,7 +66,12 @@ export default function HomePage() {
       <Main
         setVisible={setEditProfileVisible}
         visible={editProfileVisible}
-      ></Main>
+        setConfirmLogout={setConfirmLogout}
+      />
+      <LogoutModal
+        confirmLogout={confirmLogout}
+        setConfirmLogout={setConfirmLogout}
+      />
 
       {activePost && (
         <SinglePostModal

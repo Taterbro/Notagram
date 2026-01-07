@@ -1,10 +1,8 @@
 import CustomInput from "@/components/RHF/customInput";
 import { typography } from "@/constants/theme";
-import { useAuth } from "@/contexts/authContext";
 import { SafeAreaWrapper } from "@/hoc/SafeAreaWrapper";
 import { useTheme } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -18,7 +16,6 @@ import { Button, Dialog, Portal } from "react-native-paper";
 
 export default function SignIn() {
   const { colors } = useTheme();
-  const { setter } = useAuth();
   const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
@@ -30,13 +27,7 @@ export default function SignIn() {
   const router = useRouter();
 
   const onSubmit = async (data: any) => {
-    try {
-      SecureStore.setItemAsync("userData", JSON.stringify(data));
-      setter({ name: "Guy", pfp: "something" });
-      router.dismissTo("/signIn/welcome");
-    } catch {
-      console.log("something happened idk");
-    }
+    router.dismissTo("/signIn/welcome");
   };
   const randomMessage = Math.floor(Math.random() * 2);
   const welcomeMessages = ["Welcome Back", "Hi again", "Glad to have you back"];

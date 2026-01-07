@@ -16,7 +16,7 @@ function RootLayoutNav() {
   const isFirstTime = SecureStore.getItem("isFirstTime");
 
   useEffect(() => {
-    console.log("first time is: ", isFirstTime);
+    console.log("first time is: ", userData);
   }, []);
 
   return (

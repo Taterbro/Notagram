@@ -9,7 +9,7 @@ interface userData {
 
 interface context {
   userData: userData | null;
-  setter: (data: Partial<userData>) => void;
+  setter: (data: userData | null) => void;
 }
 
 interface props {
@@ -24,14 +24,17 @@ const authContext = createContext<context>({
 export const AuthProvider = ({ children }: props) => {
   const [userData, setUserData] = useState<userData | null>(null);
 
-  const userDataSetter = async (value: Partial<userData>) => {
-    const stringed = JSON.stringify(value);
+  const userDataSetter = async (value: userData | null) => {
+    const stringed = value ? JSON.stringify(value) : "";
     try {
       await SecureStore.setItemAsync("userData", stringed);
-      setUserData((prev) => {
-        if (!prev) return null;
-        return { ...prev, ...value };
-      });
+      if (value) {
+        setUserData((prev) => {
+          return { ...prev, ...value };
+        });
+      } else if (value === null) {
+        setUserData(null);
+      }
     } catch {
       console.log("Error setting item in local Storage");
     }

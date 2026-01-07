@@ -1,6 +1,8 @@
 import { typography } from "@/constants/theme";
+import { useAuth } from "@/contexts/authContext";
 import { useTheme } from "@react-navigation/native";
 import * as DocumentPicker from "expo-document-picker";
+import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -15,16 +17,20 @@ import {
 } from "react-native";
 import { ChevronLeftIcon, PlusCircleIcon } from "react-native-heroicons/solid";
 import { Avatar, Button } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 import PasswordForm, { PasswordFormRef } from "./passwordForm";
 
 interface props {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  setConfirmLogout: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Main({ visible, setVisible }: props) {
+export default function Main({ visible, setVisible, setConfirmLogout }: props) {
   const { colors } = useTheme() as any;
+  const router = useRouter();
   const styles = createStyles(colors);
+  const { setter } = useAuth();
   //grab user details from storage and set this to name when page first mounts.
   const [username, setUsername] = useState("Vic");
   const [changesMade, setChangesMade] = useState(false);
@@ -44,6 +50,10 @@ export default function Main({ visible, setVisible }: props) {
     if (isPasswordForm) {
       handleExternalSubmit();
     }
+  };
+
+  const handleLogout = async () => {
+    setter(null);
   };
 
   const selectPfp = async () => {
@@ -67,81 +77,128 @@ export default function Main({ visible, setVisible }: props) {
       visible={visible}
       onRequestClose={() => setVisible(false)}
     >
-      <View style={styles.main}>
-        <View style={[styles.top, styles.flexRow]}>
-          <TouchableOpacity onPress={() => setVisible(false)}>
-            <View style={[styles.flexRow, styles.top_back]}>
-              <ChevronLeftIcon
-                fill={colors.textSecondary}
-                size={typography.md}
-              />
-              <Text style={styles.backText}>back</Text>
-            </View>
-          </TouchableOpacity>
+      <SafeAreaView>
+        <View style={styles.main}>
+          <View style={[styles.top, styles.flexRow]}>
+            <TouchableOpacity
+              style={{ paddingVertical: 8 }}
+              onPress={() => setVisible(false)}
+            >
+              <View style={[styles.flexRow, styles.top_back]}>
+                <ChevronLeftIcon
+                  fill={colors.textSecondary}
+                  size={typography.md}
+                />
+                <Text style={styles.backText}>back</Text>
+              </View>
+            </TouchableOpacity>
 
-          <Button mode="contained" style={{ backgroundColor: colors.error }}>
-            <Text style={{ color: "white" }}>Logout</Text>
-          </Button>
-        </View>
+            <Button
+              onPress={() => setConfirmLogout(true)}
+              mode="contained"
+              style={{ backgroundColor: colors.error }}
+            >
+              <Text style={{ color: "white" }}>Logout</Text>
+            </Button>
+          </View>
 
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-          <ScrollView contentContainerStyle={styles.content}>
-            <View style={{ alignItems: "center" }}>
-              <View style={{ position: "relative" }}>
-                <TouchableOpacity onPress={selectPfp} style={styles.addButton}>
-                  <PlusCircleIcon fill={colors.primary} size={50} />
-                </TouchableOpacity>
-                <Avatar.Image
-                  size={180}
-                  source={{
-                    uri:
-                      selectedPfp?.uri ||
-                      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.p1mZWe9jcwqM8ztIYKYnlQHaHo%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=3715e9de8c43e74379ac2f63692e36c1b3fec98f9fd592eebb578bf37c8f7ecf&ipo=images",
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
+            <ScrollView contentContainerStyle={styles.content}>
+              <View style={{ alignItems: "center" }}>
+                <View style={{ position: "relative" }}>
+                  <TouchableOpacity
+                    onPress={selectPfp}
+                    style={styles.addButton}
+                  >
+                    <PlusCircleIcon fill={colors.primary} size={50} />
+                  </TouchableOpacity>
+                  <Avatar.Image
+                    size={180}
+                    source={{
+                      uri:
+                        selectedPfp?.uri ||
+                        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.p1mZWe9jcwqM8ztIYKYnlQHaHo%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=3715e9de8c43e74379ac2f63692e36c1b3fec98f9fd592eebb578bf37c8f7ecf&ipo=images",
+                    }}
+                  />
+                </View>
+
+                <TextInput
+                  style={styles.userName}
+                  onChangeText={(e) => {
+                    setUsername(e);
                   }}
+                  value={username}
                 />
               </View>
 
-              <TextInput
-                style={styles.userName}
-                onChangeText={(e) => {
-                  setUsername(e);
-                }}
-                value={username}
-              />
-            </View>
+              {isPasswordForm && <PasswordForm ref={formRef} />}
 
-            {isPasswordForm && <PasswordForm ref={formRef} />}
-
-            <View
-              style={[
-                styles.flexRow,
-                {
-                  width: "100%",
-                  paddingHorizontal: 10,
-                  alignItems: "flex-end",
-                },
-              ]}
-            >
-              <TouchableOpacity
-                onPress={() => setPasswordForm((prev) => !prev)}
+              <View
+                style={[
+                  styles.flexRow,
+                  {
+                    width: "100%",
+                    paddingHorizontal: 10,
+                    alignItems: "flex-end",
+                  },
+                ]}
               >
-                <Text style={styles.passwordText}>
-                  {isPasswordForm ? "Cancel" : "Change password"}
-                </Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setPasswordForm((prev) => !prev)}
+                >
+                  <Text style={styles.passwordText}>
+                    {isPasswordForm ? "Cancel" : "Change password"}
+                  </Text>
+                </TouchableOpacity>
 
-              {(changesMade || isPasswordForm) && (
-                <Button onPress={handleSubmit} mode="contained">
-                  <Text>Save Changes</Text>
-                </Button>
-              )}
-            </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </View>
+                {(changesMade || isPasswordForm) && (
+                  <Button onPress={handleSubmit} mode="contained">
+                    <Text>Save Changes</Text>
+                  </Button>
+                )}
+              </View>
+
+              {/* <Portal>
+              <Modal
+                visible={confirmLogout}
+                onDismiss={() => setConfirmLogout(false)}
+                style={{
+                  backgroundColor: colors.background,
+                  width: "100%",
+                  maxHeight: 40,
+                  marginHorizontal: 40,
+                }}
+              >
+                <Text>You sure you want to logout?</Text>
+                <View style={{ height: 10 }} />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Button onPress={() => setConfirmLogout(false)}>
+                    <Text>No</Text>
+                  </Button>
+
+                  <Button
+                    mode="contained"
+                    style={{ backgroundColor: colors.error }}
+                    onPress={handleLogout}
+                  >
+                    <Text style={styles.logoutText}>logout</Text>
+                  </Button>
+                </View>
+              </Modal>
+            </Portal> */}
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </View>
+      </SafeAreaView>
     </Modal>
   );
 }
