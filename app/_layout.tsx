@@ -25,7 +25,7 @@ function RootLayoutNav() {
         headerShown: false,
       }}
     >
-      <Stack.Protected guard={isFirstTime === null}>
+      <Stack.Protected guard={isFirstTime === null && userData !== null}>
         <Stack.Screen name="index" />
       </Stack.Protected>
 

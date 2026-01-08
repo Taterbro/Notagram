@@ -50,7 +50,8 @@
           "behavior": "inset-swipe",
           "position": "relative"
         }
-      ]
+      ],
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true,

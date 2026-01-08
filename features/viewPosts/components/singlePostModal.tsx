@@ -1,8 +1,10 @@
 import { markdownStyles } from "@/constants/markdownStyles";
 import { posts } from "@/constants/postsTest";
 import { typography } from "@/constants/theme";
+import { isVideoFile } from "@/utils/isVideoFile";
 import { useTheme } from "@react-navigation/native";
 import { useAudioPlayer } from "expo-audio";
+import { useVideoPlayer, VideoSource, VideoView } from "expo-video";
 import { useEffect, useState } from "react";
 import {
   Image,
@@ -47,6 +49,7 @@ export default function SinglePostModal({
   };
   const audioPlayer = useAudioPlayer(activePost.audio);
   const [activeImage, setActiveImage] = useState(0);
+  const [videoSource, setVideoSource] = useState<VideoSource>(null);
   const onPhotoButtonClick = (action: 1 | 0) => {
     if (action === 1 && activeImage + 1 < activePost.images.length) {
       setActiveImage((prev) => prev + 1);
@@ -55,6 +58,13 @@ export default function SinglePostModal({
     }
   };
 
+  const videoPlayer = useVideoPlayer(videoSource, (player) => {
+    player.loop = true;
+    player.play();
+  });
+
+  //const { isPlaying } = useEvent(videoPlayer, 'playingChange', { isPlaying: videoPlayer.playing });
+
   useEffect(() => {
     if (isAudioMuted) {
       audioPlayer.pause();
@@ -62,6 +72,7 @@ export default function SinglePostModal({
       audioPlayer.play();
     }
   }, [isAudioMuted]);
+
   return (
     <Modal
       animationType="slide"
@@ -106,14 +117,22 @@ export default function SinglePostModal({
                     )}
                   </Pressable>
                 )}
+
                 <Pressable
                   style={{ width: "100%", height: "100%" }}
                   onPress={() => setActivePhoto(activePost.images[activeImage])}
                 >
-                  <Image
-                    style={styles.photo}
-                    source={{ uri: activePost.images[activeImage] }}
-                  />
+                  {isVideoFile(activePost.images[activeImage]) ? (
+                    <VideoView
+                      style={styles.video}
+                      player={videoPlayer && videoPlayer}
+                    />
+                  ) : (
+                    <Image
+                      style={styles.photo}
+                      source={{ uri: activePost.images[activeImage] }}
+                    />
+                  )}
                 </Pressable>
               </>
             </View>
@@ -229,5 +248,9 @@ const createStyles = (colors: any) =>
     },
     descriptionStyle: {
       color: colors.text,
+    },
+    video: {
+      width: "100%",
+      height: "100%",
     },
   });
