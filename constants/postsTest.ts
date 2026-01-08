@@ -66,6 +66,7 @@ Creativity grows when you:
     audio:
       "http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Sevish_-__nbsp_.mp3",
     images: [
+      "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
       "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.IFYMiHANYrBgtKRQUg_8OAHaHa%3Fpid%3DApi&f=1&ipt=eaabc23c27158e694e8a6c3158945f78d38306cda2247eb84d66d1f56ca33a56&ipo=images",
       "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%2Fid%2FOIP.FNO-lhjUqZdtKKz3lVCvzAHaKL%3Fpid%3DApi&f=1&ipt=b2867a25f2422744ee708a590720eafb81bd5ad89879b29ca50d5cf07e218d2e&ipo=images",
       "",

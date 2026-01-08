@@ -58,7 +58,7 @@ export default function SinglePostModal({
 
   // Only create video player if current image is a video
   const videoPlayer = useVideoPlayer(
-    isCurrentVideo ? { uri: currentImageUri } : null,
+    isCurrentVideo ? { uri: currentImageUri, useCaching: true } : null,
     (player) => {
       player.loop = true;
       player.play();
@@ -133,7 +133,11 @@ export default function SinglePostModal({
                 )}
 
                 {isCurrentVideo ? (
-                  <VideoView style={styles.video} player={videoPlayer} />
+                  <VideoView
+                    style={styles.video}
+                    player={videoPlayer}
+                    nativeControls={true}
+                  />
                 ) : (
                   <Pressable
                     style={{ width: "100%", height: "100%" }}
