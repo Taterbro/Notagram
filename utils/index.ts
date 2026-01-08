@@ -1,0 +1,1 @@
+export { isVideoFile } from "./isVideoFile";

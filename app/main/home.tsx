@@ -19,7 +19,6 @@ import { Avatar } from "react-native-paper";
 export default function HomePage() {
   const { colors } = useTheme();
   const styles = createStyles(colors);
-  // const [viewMode, setViewMode] = useState<"grid" | "single">("grid");
   const [editProfileVisible, setEditProfileVisible] = useState(false);
   const [columnNumbers, setColumnNumbers] = useState(3);
   const [activePost, setActivePost] = useState<posts | null>(null);
