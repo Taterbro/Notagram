@@ -45,6 +45,9 @@ export default function SinglePostModal({
   const { colors } = useTheme() as any;
   const styles = createStyles(colors);
   const pressPlay = () => {
+    if (isVideoFile(activePost.images[activeImage])) {
+      return;
+    }
     setAudioMuted((prev) => !prev);
   };
   const audioPlayer = useAudioPlayer(activePost.audio);
@@ -77,6 +80,12 @@ export default function SinglePostModal({
       audioPlayer.play();
     }
   }, [isAudioMuted]);
+  useEffect(() => {
+    if (isVideoFile(activePost.images[activeImage]) && !isAudioMuted) {
+      setAudioMuted(true);
+      audioPlayer.pause();
+    }
+  }, [activeImage]);
 
   return (
     <Modal
@@ -122,19 +131,20 @@ export default function SinglePostModal({
                     )}
                   </Pressable>
                 )}
-                <Pressable
-                  style={{ width: "100%", height: "100%" }}
-                  onPress={() => setActivePhoto(currentImageUri)}
-                >
-                  {isCurrentVideo ? (
-                    <VideoView style={styles.video} player={videoPlayer} />
-                  ) : (
+
+                {isCurrentVideo ? (
+                  <VideoView style={styles.video} player={videoPlayer} />
+                ) : (
+                  <Pressable
+                    style={{ width: "100%", height: "100%" }}
+                    onPress={() => setActivePhoto(currentImageUri)}
+                  >
                     <Image
                       style={styles.photo}
                       source={{ uri: currentImageUri }}
                     />
-                  )}
-                </Pressable>
+                  </Pressable>
+                )}
               </>
             </View>
 
