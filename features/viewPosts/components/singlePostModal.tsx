@@ -4,7 +4,7 @@ import { typography } from "@/constants/theme";
 import { isVideoFile } from "@/utils/isVideoFile";
 import { useTheme } from "@react-navigation/native";
 import { useAudioPlayer } from "expo-audio";
-import { useVideoPlayer, VideoSource, VideoView } from "expo-video";
+import { useVideoPlayer, VideoView } from "expo-video";
 import { useEffect, useState } from "react";
 import {
   Image,
@@ -49,7 +49,19 @@ export default function SinglePostModal({
   };
   const audioPlayer = useAudioPlayer(activePost.audio);
   const [activeImage, setActiveImage] = useState(0);
-  const [videoSource, setVideoSource] = useState<VideoSource>(null);
+
+  const currentImageUri = activePost.images[activeImage];
+  const isCurrentVideo = isVideoFile(currentImageUri);
+
+  // Only create video player if current image is a video
+  const videoPlayer = useVideoPlayer(
+    isCurrentVideo ? { uri: currentImageUri } : null,
+    (player) => {
+      player.loop = true;
+      player.play();
+    }
+  );
+
   const onPhotoButtonClick = (action: 1 | 0) => {
     if (action === 1 && activeImage + 1 < activePost.images.length) {
       setActiveImage((prev) => prev + 1);
@@ -57,13 +69,6 @@ export default function SinglePostModal({
       setActiveImage((prev) => prev - 1);
     }
   };
-
-  const videoPlayer = useVideoPlayer(videoSource, (player) => {
-    player.loop = true;
-    player.play();
-  });
-
-  //const { isPlaying } = useEvent(videoPlayer, 'playingChange', { isPlaying: videoPlayer.playing });
 
   useEffect(() => {
     if (isAudioMuted) {
@@ -117,20 +122,16 @@ export default function SinglePostModal({
                     )}
                   </Pressable>
                 )}
-
                 <Pressable
                   style={{ width: "100%", height: "100%" }}
-                  onPress={() => setActivePhoto(activePost.images[activeImage])}
+                  onPress={() => setActivePhoto(currentImageUri)}
                 >
-                  {isVideoFile(activePost.images[activeImage]) ? (
-                    <VideoView
-                      style={styles.video}
-                      player={videoPlayer && videoPlayer}
-                    />
+                  {isCurrentVideo ? (
+                    <VideoView style={styles.video} player={videoPlayer} />
                   ) : (
                     <Image
                       style={styles.photo}
-                      source={{ uri: activePost.images[activeImage] }}
+                      source={{ uri: currentImageUri }}
                     />
                   )}
                 </Pressable>
