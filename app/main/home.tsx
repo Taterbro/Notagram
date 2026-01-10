@@ -1,6 +1,10 @@
 import ViewPhotoModal from "@/components/viewPhotoModal";
-import { posts, testPosts } from "@/constants/postsTest";
+import { testPosts } from "@/constants/postsTest";
 import { typography } from "@/constants/theme";
+import {
+  ActivePostContextProvider,
+  useActivePost,
+} from "@/contexts/activePostContext";
 import { Main } from "@/features/editProfile";
 import LogoutModal from "@/features/editProfile/logoutModal";
 import { PostItem, SinglePostModal } from "@/features/viewPosts";
@@ -16,12 +20,21 @@ import {
 } from "react-native";
 import { Avatar } from "react-native-paper";
 
-export default function HomePage() {
+export default function HomePageWithContext() {
+  return (
+    <ActivePostContextProvider>
+      <HomePage />
+    </ActivePostContextProvider>
+  );
+}
+
+export function HomePage() {
   const { colors } = useTheme();
+  const { data: activePost, setter: setActivePost } = useActivePost();
   const styles = createStyles(colors);
   const [editProfileVisible, setEditProfileVisible] = useState(false);
   const [columnNumbers, setColumnNumbers] = useState(3);
-  const [activePost, setActivePost] = useState<posts | null>(null);
+  //const [activePost, setActivePost] = useState<posts | null>(null);
   const [activePhoto, setActivePhoto] = useState<string | undefined>(undefined);
   const [isAudioMuted, setAudioMuted] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
@@ -54,11 +67,7 @@ export default function HomePage() {
           numColumns={columnNumbers}
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => (
-            <PostItem
-              setActivePost={setActivePost}
-              post={item}
-              url={item.images[0]}
-            />
+            <PostItem post={item} url={item.images[0]} />
           )}
         />
       </View>
@@ -75,8 +84,6 @@ export default function HomePage() {
       {activePost && (
         <SinglePostModal
           visible={activePost ? true : false}
-          setActivePost={setActivePost}
-          activePost={activePost}
           isAudioMuted={isAudioMuted}
           setAudioMuted={setAudioMuted}
           setActivePhoto={setActivePhoto}

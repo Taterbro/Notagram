@@ -1,6 +1,6 @@
 import { markdownStyles } from "@/constants/markdownStyles";
-import { posts } from "@/constants/postsTest";
 import { typography } from "@/constants/theme";
+import { useActivePost } from "@/contexts/activePostContext";
 import { isVideoFile } from "@/utils/isVideoFile";
 import { useTheme } from "@react-navigation/native";
 import { useAudioPlayer } from "expo-audio";
@@ -27,8 +27,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 interface props {
   visible: boolean;
-  setActivePost: React.Dispatch<React.SetStateAction<posts | null>>;
-  activePost: posts;
+  // setActivePost: React.Dispatch<React.SetStateAction<posts | null>>;
+  // activePost: posts;
   isAudioMuted: boolean;
   setAudioMuted: React.Dispatch<React.SetStateAction<boolean>>;
   setActivePhoto: React.Dispatch<React.SetStateAction<string | undefined>>;
@@ -36,24 +36,23 @@ interface props {
 
 export default function SinglePostModal({
   visible,
-  setActivePost,
-  activePost,
   isAudioMuted,
   setAudioMuted,
   setActivePhoto,
 }: props) {
   const { colors } = useTheme() as any;
   const styles = createStyles(colors);
+  const { data: activePost, setter: setActivePost } = useActivePost();
   const pressPlay = () => {
-    if (isVideoFile(activePost.images[activeImage])) {
+    if (activePost && isVideoFile(activePost.images[activeImage])) {
       return;
     }
     setAudioMuted((prev) => !prev);
   };
-  const audioPlayer = useAudioPlayer(activePost.audio);
+  const audioPlayer = activePost && useAudioPlayer(activePost.audio);
   const [activeImage, setActiveImage] = useState(0);
 
-  const currentImageUri = activePost.images[activeImage];
+  const currentImageUri = activePost ? activePost.images[activeImage] : "";
   const isCurrentVideo = isVideoFile(currentImageUri);
 
   // Only create video player if current image is a video
@@ -66,6 +65,9 @@ export default function SinglePostModal({
   );
 
   const onPhotoButtonClick = (action: 1 | 0) => {
+    if (!activePost) {
+      return;
+    }
     if (action === 1 && activeImage + 1 < activePost.images.length) {
       setActiveImage((prev) => prev + 1);
     } else if (action === 0 && activeImage > 0) {
@@ -74,6 +76,9 @@ export default function SinglePostModal({
   };
 
   useEffect(() => {
+    if (!audioPlayer) {
+      return;
+    }
     if (isAudioMuted) {
       audioPlayer.pause();
     } else {
@@ -81,11 +86,20 @@ export default function SinglePostModal({
     }
   }, [isAudioMuted]);
   useEffect(() => {
-    if (isVideoFile(activePost.images[activeImage]) && !isAudioMuted) {
+    if (
+      activePost &&
+      audioPlayer &&
+      isVideoFile(activePost.images[activeImage]) &&
+      !isAudioMuted
+    ) {
       setAudioMuted(true);
       audioPlayer.pause();
     }
   }, [activeImage]);
+
+  if (!activePost) {
+    return;
+  }
 
   return (
     <Modal

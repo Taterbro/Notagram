@@ -1,17 +1,18 @@
 import { posts } from "@/constants/postsTest";
+import { useActivePost } from "@/contexts/activePostContext";
 import { isVideoFile } from "@/utils";
 import * as VideoThumbnails from "expo-video-thumbnails";
 import { useEffect, useState } from "react";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
 
 interface props {
-  post: posts;
   url: string;
-  setActivePost: React.Dispatch<React.SetStateAction<posts | null>>;
+  post: posts;
 }
 
-export default function PostItem({ url, post, setActivePost }: props) {
+export default function PostItem({ url, post }: props) {
   const [thumbnail, setThumbnail] = useState<string>(url);
+  const { setter: setActivePost, data } = useActivePost();
   useEffect(() => {
     const generateVideoThumbnail = async (videoUri: string) => {
       try {
