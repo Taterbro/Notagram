@@ -27,22 +27,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 interface props {
   visible: boolean;
-  // setActivePost: React.Dispatch<React.SetStateAction<posts | null>>;
-  // activePost: posts;
-  isAudioMuted: boolean;
-  setAudioMuted: React.Dispatch<React.SetStateAction<boolean>>;
   setActivePhoto: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export default function SinglePostModal({
-  visible,
-  isAudioMuted,
-  setAudioMuted,
-  setActivePhoto,
-}: props) {
+export default function SinglePostModal({ visible, setActivePhoto }: props) {
   const { colors } = useTheme() as any;
   const styles = createStyles(colors);
-  const { data: activePost, setter: setActivePost } = useActivePost();
+  const {
+    data: activePost,
+    setter: setActivePost,
+    isAudioMuted,
+    setAudioMuted,
+  } = useActivePost();
   const pressPlay = () => {
     if (activePost && isVideoFile(activePost.images[activeImage])) {
       return;

@@ -84,8 +84,6 @@ export function HomePage() {
       {activePost && (
         <SinglePostModal
           visible={activePost ? true : false}
-          isAudioMuted={isAudioMuted}
-          setAudioMuted={setAudioMuted}
           setActivePhoto={setActivePhoto}
         />
       )}

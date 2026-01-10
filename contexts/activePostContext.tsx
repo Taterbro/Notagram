@@ -5,7 +5,7 @@ interface contextType {
   data: posts | null;
   setter: (data: posts | null) => void;
   isAudioMuted: boolean;
-  setAudioMuted: (data: boolean) => void;
+  setAudioMuted: React.Dispatch<React.SetStateAction<boolean>>;
 }
 interface props {
   children: React.ReactNode;
