@@ -1,27 +1,21 @@
+import PostNavigator from "@/components/postNavigator";
 import { markdownStyles } from "@/constants/markdownStyles";
 import { typography } from "@/constants/theme";
 import { useActivePost } from "@/contexts/activePostContext";
 import { isVideoFile } from "@/utils/isVideoFile";
 import { useTheme } from "@react-navigation/native";
 import { useAudioPlayer } from "expo-audio";
-import { useVideoPlayer, VideoView } from "expo-video";
+import { useVideoPlayer } from "expo-video";
 import { useEffect, useState } from "react";
 import {
-  Image,
   Modal,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  SpeakerWaveIcon,
-  SpeakerXMarkIcon,
-} from "react-native-heroicons/solid";
+import { ChevronLeftIcon } from "react-native-heroicons/solid";
 import Markdown from "react-native-markdown-display";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -124,7 +118,8 @@ export default function SinglePostModal({ visible, setActivePhoto }: props) {
           <Text style={styles.postTitle}>{activePost.title}</Text>
 
           <ScrollView>
-            <View style={styles.box}>
+            <PostNavigator setActivePhoto={setActivePhoto} />
+            {/* <View style={styles.box}>
               <>
                 {activePost.audio && (
                   <Pressable onPress={pressPlay} style={styles.playerButton}>
@@ -160,25 +155,7 @@ export default function SinglePostModal({ visible, setActivePhoto }: props) {
                   </Pressable>
                 )}
               </>
-            </View>
-
-            <View style={styles.photoNav}>
-              <TouchableOpacity
-                onPress={() => onPhotoButtonClick(0)}
-                style={styles.photoNav_buttons}
-              >
-                <ChevronLeftIcon fill={colors.textSecondary} size={20} />
-              </TouchableOpacity>
-              <Text style={styles.photoNav_text}>{`${activeImage + 1}/${
-                activePost.images.length || "1"
-              }`}</Text>
-              <TouchableOpacity
-                onPress={() => onPhotoButtonClick(1)}
-                style={styles.photoNav_buttons}
-              >
-                <ChevronRightIcon fill={colors.textSecondary} size={20} />
-              </TouchableOpacity>
-            </View>
+            </View> */}
 
             <Markdown style={markdownStyles(colors)}>
               {activePost.description}
