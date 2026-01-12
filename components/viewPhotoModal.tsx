@@ -37,6 +37,7 @@ export default function ViewPhotoModal({
           <XCircleIcon fill={colors.primaryLight} size={"100%"} />
         </TouchableOpacity>
       </View>
+
       {/* ) : (
         <Text>No Photos selected</Text>
       )} */}

@@ -1,7 +1,9 @@
 import ViewPhotoModal from "@/components/viewPhotoModal";
 import { typography } from "@/constants/theme";
+import { isVideoFile } from "@/utils";
 import { useTheme } from "@react-navigation/native";
 import * as DocumentPicker from "expo-document-picker";
+import { useVideoPlayer, VideoView } from "expo-video";
 import { useState } from "react";
 import {
   Image,
@@ -20,11 +22,11 @@ import {
 } from "react-native-heroicons/solid";
 
 interface props {
-  photos: DocumentPicker.DocumentPickerAsset[];
+  photos: DocumentPicker.DocumentPickerAsset[] | null;
   setPhotos: React.Dispatch<
     React.SetStateAction<DocumentPicker.DocumentPickerAsset[] | null>
   >;
-  audio: DocumentPicker.DocumentPickerAsset;
+  audio: DocumentPicker.DocumentPickerAsset | null;
   isAudioPlaying: boolean;
   pressPlay: () => Promise<void>;
 }
@@ -39,6 +41,17 @@ export default function PostNavigator({
   const styles = createStyles(colors);
   const [isModalOpen, setModalOpen] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
+  const currentImageUri = photos ? photos[activeImage].uri : "";
+
+  const isCurrentVideo = isVideoFile(currentImageUri);
+
+  const videoPlayer = useVideoPlayer(
+    isCurrentVideo ? { uri: currentImageUri, useCaching: true } : null,
+    (player) => {
+      player.loop = true;
+      player.play();
+    }
+  );
   const removePhoto = () => {
     if (!photos) return;
 
@@ -68,27 +81,37 @@ export default function PostNavigator({
 
   return (
     <>
-      {audio && (
-        <Pressable onPress={pressPlay} style={styles.playerButton}>
-          {isAudioPlaying ? (
-            <SpeakerWaveIcon fill={colors.primaryLight} size={"100%"} />
-          ) : (
-            <SpeakerXMarkIcon fill={colors.primaryLight} size={"100%"} />
-          )}
-        </Pressable>
-      )}
       <TouchableOpacity onPress={removePhoto} style={styles.deleteButton}>
         <XCircleIcon fill={colors.primaryLight} size={"100%"} />
       </TouchableOpacity>
-      <Pressable
-        style={{ width: "100%", height: "100%" }}
-        onPress={() => setModalOpen(true)}
-      >
-        <Image
-          style={styles.photo}
-          source={{ uri: photos?.[activeImage].uri }}
-        />
-      </Pressable>
+      <View style={styles.box}>
+        {audio && (
+          <Pressable onPress={pressPlay} style={styles.playerButton}>
+            {isAudioPlaying ? (
+              <SpeakerWaveIcon fill={colors.primaryLight} size={"100%"} />
+            ) : (
+              <SpeakerXMarkIcon fill={colors.primaryLight} size={"100%"} />
+            )}
+          </Pressable>
+        )}
+        {isCurrentVideo ? (
+          <VideoView
+            style={styles.video}
+            player={videoPlayer}
+            nativeControls={true}
+          />
+        ) : (
+          <Pressable
+            style={{ width: "100%", height: "100%" }}
+            onPress={() => setModalOpen(true)}
+          >
+            <Image
+              style={styles.photo}
+              source={{ uri: photos?.[activeImage].uri }}
+            />
+          </Pressable>
+        )}
+      </View>
 
       <View style={styles.photoNav}>
         <TouchableOpacity
@@ -108,76 +131,19 @@ export default function PostNavigator({
         </TouchableOpacity>
       </View>
 
-      <ViewPhotoModal
-        isModalOpen={isModalOpen}
-        onRequestClose={() => setModalOpen(false)}
-        activePhoto={photos[activeImage]}
-      />
+      {photos && isModalOpen && (
+        <ViewPhotoModal
+          isModalOpen={isModalOpen}
+          onRequestClose={() => setModalOpen(false)}
+          activePhoto={photos[activeImage]}
+        />
+      )}
     </>
   );
 }
 
 const createStyles = (colors: any) =>
   StyleSheet.create({
-    header: {
-      justifyContent: "space-between",
-      borderBottomColor: colors.textSecondary,
-      borderBottomWidth: 1,
-      paddingVertical: 4,
-      marginBottom: 8,
-    },
-    uploadContainer: {
-      width: "100%",
-      alignItems: "flex-end",
-    },
-    uploadContainer_photos: {
-      width: "100%",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-    },
-    description: {
-      backgroundColor: "transparent",
-      borderWidth: 1,
-      borderColor: colors.primaryDark,
-    },
-    box: {
-      borderWidth: 1,
-      borderColor: colors.textSecondary,
-      aspectRatio: "1/1",
-      minWidth: "100%",
-      minHeight: "auto",
-      alignItems: "center",
-      justifyContent: "center",
-      marginBottom: 8,
-      position: "relative",
-    },
-    postTitle: {
-      backgroundColor: "transparent",
-      color: colors.text,
-      fontSize: typography.xl,
-    },
-    box_touch: {
-      width: "100%",
-      height: "100%",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-
-    headerTitle: {
-      fontSize: typography.md,
-      color: colors.textSecondary,
-      marginLeft: 8,
-    },
-    addFileText: {
-      color: colors.text,
-      fontSize: typography.lg,
-    },
-    buttonsContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
     addPhotosText: {
       fontSize: typography.sm,
       color: colors.textSecondary,
@@ -192,6 +158,21 @@ const createStyles = (colors: any) =>
     photoNav_text: {
       color: colors.textSecondary,
       fontSize: typography.md,
+    },
+    video: {
+      width: "100%",
+      height: "100%",
+    },
+    box: {
+      borderWidth: 1,
+      borderColor: colors.textSecondary,
+      aspectRatio: "1/1",
+      minWidth: "100%",
+      minHeight: "auto",
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: 8,
+      position: "relative",
     },
     photoNav_buttons: {
       padding: 4,

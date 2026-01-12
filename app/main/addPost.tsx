@@ -1,6 +1,7 @@
 import ViewPhotoModal from "@/components/viewPhotoModal";
 import { typography } from "@/constants/theme";
 import { MAX_PHOTOS_UPLOAD } from "@/constants/variables";
+import { PostNavigator } from "@/features/addPost";
 import { SafeAreaWrapper } from "@/hoc/SafeAreaWrapper";
 import { useTheme } from "@react-navigation/native";
 import { useAudioPlayer } from "expo-audio";
@@ -8,24 +9,15 @@ import * as DocumentPicker from "expo-document-picker";
 import { useEffect, useState } from "react";
 import {
   Alert,
-  Image,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  PhotoIcon,
-  SpeakerWaveIcon,
-  SpeakerXMarkIcon,
-  XCircleIcon,
-} from "react-native-heroicons/solid";
+import { PhotoIcon } from "react-native-heroicons/solid";
 import { Button, TextInput } from "react-native-paper";
 
 export default function AddPost() {
@@ -212,41 +204,16 @@ export default function AddPost() {
         style={{ flex: 1 }}
       >
         <ScrollView>
-          <View style={styles.box}>
-            {hasPhotos ? (
-              <>
-                {audio && (
-                  <Pressable onPress={pressPlay} style={styles.playerButton}>
-                    {isAudioPlaying ? (
-                      <SpeakerWaveIcon
-                        fill={colors.primaryLight}
-                        size={"100%"}
-                      />
-                    ) : (
-                      <SpeakerXMarkIcon
-                        fill={colors.primaryLight}
-                        size={"100%"}
-                      />
-                    )}
-                  </Pressable>
-                )}
-                <TouchableOpacity
-                  onPress={removePhoto}
-                  style={styles.deleteButton}
-                >
-                  <XCircleIcon fill={colors.primaryLight} size={"100%"} />
-                </TouchableOpacity>
-                <Pressable
-                  style={{ width: "100%", height: "100%" }}
-                  onPress={() => setModalOpen(true)}
-                >
-                  <Image
-                    style={styles.photo}
-                    source={{ uri: photos?.[activeImage].uri }}
-                  />
-                </Pressable>
-              </>
-            ) : (
+          {hasPhotos ? (
+            <PostNavigator
+              photos={photos}
+              setPhotos={setPhotos}
+              audio={audio}
+              isAudioPlaying={isAudioPlaying}
+              pressPlay={pressPlay}
+            />
+          ) : (
+            <View style={styles.box}>
               <TouchableOpacity style={styles.box_touch} onPress={pickFile}>
                 <PhotoIcon
                   fill={colors.primaryLight}
@@ -254,29 +221,11 @@ export default function AddPost() {
                   size={"70%"}
                 />
               </TouchableOpacity>
-            )}
-          </View>
+            </View>
+          )}
 
           {hasPhotos && (
             <>
-              <View style={styles.photoNav}>
-                <TouchableOpacity
-                  onPress={() => onPhotoButtonClick(0)}
-                  style={styles.photoNav_buttons}
-                >
-                  <ChevronLeftIcon fill={colors.textSecondary} size={20} />
-                </TouchableOpacity>
-                <Text style={styles.photoNav_text}>{`${activeImage + 1}/${
-                  photos?.length || "1"
-                }`}</Text>
-                <TouchableOpacity
-                  onPress={() => onPhotoButtonClick(1)}
-                  style={styles.photoNav_buttons}
-                >
-                  <ChevronRightIcon fill={colors.textSecondary} size={20} />
-                </TouchableOpacity>
-              </View>
-
               <View style={styles.buttonsContainer}>
                 {audio ? (
                   <TouchableOpacity onPress={pickAudio}>
