@@ -1,50 +1,17 @@
-# Welcome to your Expo app 👋
+# Notagram
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+An end-to-end encrypted photo and video storage system
 
-## Get started
+https://github.com/user-attachments/assets/b72694a6-aa25-4c4f-bdda-2d0f099289cf
 
-1. Install dependencies
+Notagram is inspired by Instagram's UI (I use it more as a journaling app) and the ability to add songs to posts. It moves away from instagram's morals however as privacy is the foundation it is built on top of. Your data (files, and descriptions) is encrypted before reaching the backend and the encryption key is stored by you, the user. If you're like me and use instagram more for journaling and keeping memories instead of likes and follows (nothing wrong with that) then you'll probably like notagram
 
-   ```bash
-   npm install
-   ```
+https://github.com/user-attachments/assets/cdbb99a0-46f6-47b1-a825-3d9379cb244e
 
-2. Start the app
+### Quick start
 
-   ```bash
-   npx expo start
-   ```
+As at the time of writing this, the backend is still being worked on, so notagram can't be used right now. The frontend is setup (for android). Here's a demo video:
 
-In the output, you'll find options to open the app in a
+https://github.com/user-attachments/assets/a91379e5-b91b-47c9-b66a-3a53e859b6e5
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+You can star this repository if you're interested in checking out notagram when it's done.
